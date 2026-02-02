@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mi Perfil Profesional - Cristopher Villa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+    *{ box-sizing: border-box; }
+
+    body{
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background: #0f172a;
+        color: #334155;
+    }
+
+    /* ===== MENU LATERAL ===== */
+    .sidebar{
+        position: fixed; top: 0; left: 0; width: 230px; height: 100vh;
+        background: #020617; padding: 30px 20px; overflow-y: auto; z-index: 100;
+    }
+
+    .sidebar h2{ color: #e5e7eb; font-family: 'Poppins', sans-serif; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #38bdf8; display: inline-block; }
+
+    .nav-btn{
+        width: 100%; background: none; border: none; color: #cbd5f5;
+        padding: 12px; margin-bottom: 8px; text-align: left;
+        cursor: pointer; border-radius: 8px; transition: 0.3s; font-size: 14px;
+        display: flex; align-items: center; gap: 10px;
+    }
+
+    .nav-btn:hover, .nav-btn.activo{ background: #1e293b; color: #38bdf8; padding-left: 20px; }
+
+    /* ===== CONTENEDOR DE ACCIONES ===== */
+    .top-actions {
+        position: fixed; top: 25px; right: 40px;
+        display: flex; gap: 12px; z-index: 200;
+    }
+
+    .btn-top {
+        background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8;
+        padding: 10px 18px; border-radius: 8px; cursor: pointer;
+        font-weight: 600; font-size: 13px; transition: 0.3s;
+        display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+
+    .btn-top:hover { background: #38bdf8; color: #020617; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+    .btn-admin { border-color: #f472b6; color: #f472b6; }
+    .btn-admin:hover { background: #f472b6; color: white; }
+
+    #btn-inicio-float { display: none; }
+
+    /* ===== PANEL DESCARGA ===== */
+    .btn-toggle-descarga {
+        width: 100%; background: #1e293b; border: 1px solid #38bdf8;
+        color: #38bdf8; padding: 12px; border-radius: 8px;
+        cursor: pointer; font-weight: 600; margin-top: 20px; text-align: center;
+    }
+
+    .panel-descarga { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: #020617; }
+    .panel-descarga.abierto { max-height: 500px; padding: 15px 0; }
+    .check-item { display: flex; align-items: center; color: #94a3b8; font-size: 12px; margin-bottom: 10px; cursor: pointer; }
+    .check-item input { margin-right: 10px; accent-color: #38bdf8; }
+    .btn-pdf-final { width: 100%; background: #38bdf8; color: #020617; border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+
+    /* ===== CONTENIDO PRINCIPAL ===== */
+    .main{ margin-left: 230px; padding: 40px; position: relative; min-height: 100vh; }
+    
+    .header{ 
+        background: linear-gradient(135deg, #020617, #0a1f44); 
+        color: white; padding: 35px; border-radius: 14px; 
+        text-align: center; margin-bottom: 30px; 
+    }
+    
+.foto-perfil { 
+        width: 160px;   /* Tamaño intermedio perfecto */
+        height: 160px; 
+        border-radius: 50%; 
+        border: 4px solid #38bdf8; 
+        margin-bottom: 20px;
+        object-fit: cover; 
+        display: inline-block;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra para dar profundidad */
+        background-color: #1e293b;
+    }
+
+    .header h1 {
+        font-size: 2rem; /* Un poco más grande para acompañar la foto */
+        margin-top: 10px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .seccion{ display: none; }
+    .seccion.activa{ display: block; animation: fade 0.5s ease; }
+    
+    @keyframes fade{ from{opacity: 0; transform: translateY(10px);} to{opacity: 1; transform: translateY(0);} }
+
+    .card{ 
+        background: #ffffff; border-radius: 14px; padding: 25px; 
+        margin-bottom: 20px; border-left: 5px solid #38bdf8; 
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+    }
+    .card h3 { color: #020617; font-family: 'Poppins', sans-serif; margin-top: 0; margin-bottom: 15px; }
+    .card h4 { font-size: 11px; color: #64748b; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 700; font-family: 'Poppins', sans-serif; text-transform: uppercase; }
+    .card p { margin: 4px 0; font-size: 13.5px; color: #334155; line-height: 1.6; }
+
+    .exp-header {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 15px;
+    }
+    .exp-status { display: flex; gap: 8px; }
+    .fecha-badge { background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+    .status-badge { background: #10b981; color: white; padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: 700; }
+    
+    .categoria-badge { background: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #bae6fd; margin-bottom: 10px;}
+
+    .btn-archivo {
+        display: inline-block; padding: 6px 14px; border: 1px solid #38bdf8;
+        color: #38bdf8; text-decoration: none; border-radius: 5px;
+        font-size: 12px; font-weight: 600; transition: 0.3s; margin-top: 10px;
+    }
+    .btn-archivo:hover { background: #38bdf8; color: white; }
+
+    /* ESTILO GARAGE TIPO LISTA */
+    .garage-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .total-badge { background: #f1f5f9; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .item-lista-garage {
+        display: flex; align-items: center; background: #ffffff;
+        border: 1px solid #e2e8f0; border-radius: 15px; padding: 15px;
+        margin-bottom: 15px; transition: 0.3s;
+    }
+    .img-garage-cont { width: 140px; height: 100px; background: #f8fafc; border-radius: 10px; overflow: hidden; margin-right: 20px; flex-shrink: 0; }
+    .img-garage-cont img { width: 100%; height: 100%; object-fit: cover; }
+    .info-garage-cont { flex-grow: 1; }
+    .info-garage-cont h4 { margin: 0; font-size: 16px; color: #020617; text-transform: none; font-family: 'Poppins'; }
+    .info-garage-cont .pub-date { font-size: 12px; color: #94a3b8; margin-bottom: 8px; display: block; }
+    .info-garage-cont .label-desc { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-top: 10px; display: block; }
+    .side-price-cont { text-align: right; min-width: 110px; }
+    .side-price-cont .precio-val { font-size: 18px; font-weight: 700; color: #38bdf8; margin-bottom: 10px; display: block; }
+    .status-pill { padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+    .pill-excelente { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .pill-regular { background: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Trayectoria</h2>
+    <button id="nav-inicio" class="nav-btn activo" onclick="mostrar('inicio', this)">👤 Inicio</button>
+    <button class="nav-btn" onclick="mostrar('experiencia', this)">💼 Experiencia</button>
+    <button class="nav-btn" onclick="mostrar('reconocimientos', this)">🏆 Logros</button>
+    <button class="nav-btn" onclick="mostrar('cursos', this)">📚 Cursos</button>
+    <button class="nav-btn" onclick="mostrar('educacion', this)">🎓 Productos Académicos</button>
+    <button class="nav-btn" onclick="mostrar('productos', this)">💻 Productos Laborales</button>
+    <button class="nav-btn" onclick="mostrar('garage', this)">🚗 Garage</button>
+
+    <button class="btn-toggle-descarga" onclick="togglePanel()">📥 Opciones de PDF</button>
+    <div id="panelDescarga" class="panel-descarga">
+        <label class="check-item"><input type="checkbox" class="pdf-opt" value="inicio" checked> Inicio</label>
+        <label class="check-item"><input type="checkbox" class="pdf-opt" value="experiencia" checked> Experiencia</label>
+        <label class="check-item"><input type="checkbox" class="pdf-opt" value="reconocimientos" checked> Reconocimientos</label>
+        <label class="check-item"><input type="checkbox" class="pdf-opt" value="cursos" checked> Cursos</label>
+        <label class="check-item"><input type="checkbox" class="pdf-opt" value="educacion" checked> Productos Académicos</label>
+        <label class="check-item"><input type="checkbox" class="pdf-opt" value="productos" checked> Productos Laborales</label>
+        <label class="check-item"><input type="checkbox" class="pdf-opt" value="garage" checked> Garage</label>
+        <button class="btn-pdf-final" onclick="generarPDF()">Descargar PDF</button>
+    </div>
+</div>
+
+<div class="main" id="cv-render">
+    <div class="top-actions">
+        <a href="../admin" class="btn-top btn-admin">🔑 Administración</a>
+        <button id="btn-inicio-float" class="btn-top" onclick="irAInicio()">🏠 Inicio</button>
+    </div>
+
+    <div id="cv-area-impresion">
+        <div class="header">
+    <img src="https://i.ibb.co/99d65hMM/perfil.jpeg" alt="Cristopher Villa" class="foto-perfil">
+    <h1>Cristopher Manuel Villa Beltrán</h1>
+    <p>Estudiante de Tecnología de la Información</p>
+    <!-- CERTIFICADOS SOLO PARA PDF -->
+<div id="certificados-pdf" style="display:none; margin-top:40px;">
+    <div class="card">
+        <h3>Certificados</h3>
+
+        <img src="https://ibb.co/GzzJ3bV" style="width:100%; margin-bottom:20px;">
+        <img src="https://ibb.co/20hTqDL6" style="width:100%; margin-bottom:20px;">
+        <img src="https://ibb.co/5g7tRGTD" style="width:100%;">
+    </div>
+</div>
+
+</div>
+
+        <div id="inicio" class="seccion activa">
+            <div class="card">
+                <h3>DATOS PERSONALES</h3>
+                <h4>IDENTIDAD</h4>
+                <p><strong>Cédula:</strong> 1351563257</p>
+                <p><strong>Lugar de nacimiento:</strong> Santo Domingo</p>
+                <p><strong>Nacionalidad:</strong> Ecuatoriana</p>
+                <p><strong>Licencia de conducir:</strong> NO</p>
+                <p><strong>Fecha de nacimiento:</strong> 04 Febrero 2006</p>
+                <p><strong>Ciudad:</strong> Manta</p>
+                <p><strong>Género:</strong> Masculino</p>
+                <p><strong>Estado civil:</strong> Casado</p>
+
+                <h4 style="margin-top:20px;">CONTACTO</h4>
+                <p><strong>Teléfono móvil:</strong> 0997577903</p>
+                <p><strong>Dirección:</strong> Avenida 111 entre calle 110 y 109</p>
+                <p><strong>Correo:</strong> <span style="color:#38bdf8;">cristophermvilla123@email.com</span></p>
+                <p><strong>Sitio web:</strong> cristopher.com</p>
+            </div>
+        </div>
+
+        <div id="experiencia" class="seccion">
+            <div class="card">
+                <div class="exp-header">
+                    <div>
+                        <h3 style="margin:0;">Operador de CCTV</h3>
+                        <p style="color:#64748b; font-size:13px;">Network Orion Seguridad — Via San Mateo, Plaza Beach</p>
+                    </div>
+                    <div class="exp-status">
+                        <span class="fecha-badge">Inicio: 29 Octubre 2024</span>
+                    </div>
+                </div>
+                <h4>CONTACTO EMPRESARIAL</h4>
+                <p><strong>Nombre:</strong> Network Orion Seguridad</p>
+                <p><strong>Teléfono:</strong> <span style="color:#38bdf8;">099999999</span></p>
+                <p><strong>Email:</strong> <span style="color:#38bdf8;">networkorion@gmail.com</span></p>
+                <h4>FUNCIONES REALIZADAS</h4>
+                <p>Monitoreo de Cámaras y seguridad electrónica.</p>
+                <a href="https://ibb.co/GzzJ3bV" target="_blank" class="btn-archivo">📄 Ver certificado</a>
+            </div>
+        </div>
+
+        <div id="reconocimientos" class="seccion">
+            <div class="card">
+                <div class="exp-header">
+                    <div>
+                        <h3 style="margin:0;">Certificación de título de bachiller</h3>
+                        <p style="color:#64748b; font-size:13px;">Colegio Tarqui - Ministerio de Educación</p>
+                    </div>
+                    <div class="exp-status">
+                        <span class="fecha-badge">🎓 Académico</span>
+                        <span class="fecha-badge">📅 20 marzo 2024</span>
+                    </div>
+                </div>
+                <h4>ENTIDAD PATROCINADORA</h4>
+                <p>Ministerio de Educación</p>
+                <h4>CONTACTO</h4>
+                <p>Ministerio de Educación · <span style="color:#38bdf8;">+593 999999999</span></p>
+                <a href="https://ibb.co/20hTqDL6" target="_blank" class="btn-archivo">📄 Ver certificado</a>
+            </div>
+        </div>
+
+        <div id="cursos" class="seccion">
+            <div class="card">
+                <div class="exp-header">
+                    <h3 style="margin:0;">Formación Complementaria</h3>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <h4>CURSOS FINALIZADOS</h4>
+                        <p>Linux unhatcher - CISCO NETWORKING ACADEMY</p>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; margin-left: 15px;">
+                        <span class="fecha-badge">Inicio: 13 May 2025</span>
+                        <span class="fecha-badge">Fin: 05 Jun 2026</span>
+                        <span class="fecha-badge">8 horas</span>
+                    </div>
+                </div>
+                <h4 style="margin-top: 15px;">DESCRIPCIÓN DEL CURSO</h4>
+                <p>Curso introductorio gratuito de 8 horas diseñado para principiantes absolutos.</p>
+                <a href="https://ibb.co/5g7tRGTD" target="_blank" class="btn-archivo">📄 Ver certificado</a>
+
+            </div>
+        </div>
+
+        <div id="educacion" class="seccion">
+            <div class="card">
+                <div class="exp-header">
+                    <div>
+                        <h3 style="margin:0;">Página Web de Información Deportiva</h3>
+                        <p style="color:#64748b; font-size:13px;">Proyecto de Gestión de Contenido</p>
+                    </div>
+                </div>
+                <span class="categoria-badge">🏷️ Medio digital / Gestión de contenido</span>
+                <h4>DESCRIPCIÓN</h4>
+                <p>Diseño y administración de una plataforma digital especializada en la difusión de noticias y actualidad del fútbol nacional e internacional.</p>
+            </div>
+        </div>
+
+        <div id="productos" class="seccion">
+            <div class="card">
+                <div class="exp-header">
+                    <div>
+                        <h3 style="margin:0;">Sistema de Gestión de Redes Locales</h3>
+                        <p style="color:#64748b; font-size:13px;">Herramienta de monitoreo y diagnóstico</p>
+                    </div>
+                </div>
+                <span class="categoria-badge">🛠️ Redes y Soporte</span>
+                <h4>LOGROS CLAVE</h4>
+                <p>Desarrollo de scripts para la detección automática de intrusos y optimización de tráfico de red.</p>
+            </div>
+        </div>
+
+        <div id="garage" class="seccion">
+            <div class="card">
+                <div class="garage-header-flex">
+                    <div>
+                        <h3 style="margin:0;">Venta de Garage</h3>
+                        <p style="margin:0; color:#64748b; font-size:14px;">Productos publicados</p>
+                    </div>
+                    <span class="total-badge">Total: 2</span>
+                </div>
+
+                <div class="item-lista-garage">
+                    <div class="img-garage-cont">
+                        <img src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?q=80&w=300" alt="PS5">
+                    </div>
+                    <div class="info-garage-cont">
+                        <h4>Consola PlayStation 5</h4>
+                        <span class="pub-date">Publicado: 31 Ene 2026</span>
+                        <span class="label-desc">DESCRIPCIÓN</span>
+                        <p>Versión de disco, un control original y cables. Poco uso.</p>
+                    </div>
+                    <div class="side-price-cont">
+                        <span class="precio-val">$480,00</span>
+                        <span class="status-pill pill-excelente">✅ Excelente</span>
+                    </div>
+                </div>
+
+                <div class="item-lista-garage">
+                    <div class="img-garage-cont">
+                        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=300" alt="Laptop">
+                    </div>
+                    <div class="info-garage-cont">
+                        <h4>Laptop HP Pavilion</h4>
+                        <span class="pub-date">Publicado: 28 Ene 2026</span>
+                        <span class="label-desc">DESCRIPCIÓN</span>
+                        <p>Core i5 10ma Gen, 12GB RAM. Teclado con desgaste leve.</p>
+                    </div>
+                    <div class="side-price-cont">
+                        <span class="precio-val">$320,00</span>
+                        <span class="status-pill pill-regular">⚠️ Regular</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function mostrar(id, boton){
+    document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('activo'));
+    document.getElementById(id).classList.add('activa');
+    if(boton) boton.classList.add('activo');
+    const btnHome = document.getElementById('btn-inicio-float');
+    btnHome.style.display = (id === 'inicio') ? 'none' : 'flex';
+}
+function irAInicio() { mostrar('inicio', document.getElementById('nav-inicio')); }
+function togglePanel() { document.getElementById('panelDescarga').classList.toggle('abierto'); }
+function generarPDF() {
+    const areaImpresion = document.getElementById('cv-area-impresion');
+    const opciones = document.querySelectorAll('.pdf-opt');
+    const todasLasSecciones = areaImpresion.querySelectorAll('.seccion');
+
+    // 1. Guardar el estado original de visibilidad
+    const estadosOriginales = [];
+    todasLasSecciones.forEach(s => {
+        estadosOriginales.push({ element: s, display: s.style.display, isActiva: s.classList.contains('activa') });
+    });
+
+    // 2. Preparar el área para la captura: Mostrar solo lo marcado en el panel
+    opciones.forEach(opt => {
+        const seccion = areaImpresion.querySelector(`#${opt.value}`);
+        if (seccion) {
+            seccion.style.display = opt.checked ? 'block' : 'none';
+            // Quitamos la animación para que no salga movido en el PDF
+            seccion.style.animation = 'none';
+        }
+    });
+
+    // 3. Configuración optimizada para capturar imágenes externas
+    const config = {
+        margin: 10,
+        filename: 'CV_Cristopher_Villa.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2, 
+            useCORS: true, // ESTO ES VITAL para que salga la foto
+            logging: false,
+            letterRendering: true
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // 4. Generar y restaurar la vista web original al terminar
+    html2pdf().set(config).from(areaImpresion).save().then(() => {
+        // Restaurar todo como estaba antes de la descarga
+        estadosOriginales.forEach(estado => {
+            estado.element.style.display = estado.display;
+            estado.element.style.animation = ''; // Restaurar animaciones
+        });
+    });
+
+    
+}
+</script>
+
+</body>
+</html>
