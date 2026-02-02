@@ -27,3 +27,8 @@ admin.site.register(DatosPersonales)
 admin.site.register(ProductoAcademico)
 admin.site.register(ProductoLaboral)
 admin.site.register(Garage)
+
+# Personalización del admin
+admin.site.site_header = "Panel de Administración"
+admin.site.site_title = "Administración del CV"
+admin.site.index_title = "Gestión de Información"
