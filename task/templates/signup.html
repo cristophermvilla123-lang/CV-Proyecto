@@ -124,6 +124,19 @@
     }
     .btn-archivo:hover { background: #38bdf8; color: white; }
 
+    .solo-pdf {
+        visibility: hidden;
+        position: absolute;
+        left: -9999px;
+    }
+
+    .mostrar-pdf {
+        visibility: visible;
+        position: static;
+    }
+
+
+
     /* ESTILO GARAGE TIPO LISTA */
     .garage-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .total-badge { background: #f1f5f9; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
@@ -132,6 +145,28 @@
         border: 1px solid #e2e8f0; border-radius: 15px; padding: 15px;
         margin-bottom: 15px; transition: 0.3s;
     }
+.certificados-pdf {
+    display: none;
+}
+
+.certificados-pdf.mostrar-pdf {
+    display: block;
+}
+
+.img-certificado {
+    width: 100%;
+    max-width: 700px;
+    display: block;
+    margin: 20px auto;
+    page-break-inside: avoid;
+}
+.img-garage {
+    width: 100%;
+    max-width: 300px;
+    display: block;
+    margin: 10px 0;
+    page-break-inside: avoid;
+}
     .img-garage-cont { width: 140px; height: 100px; background: #f8fafc; border-radius: 10px; overflow: hidden; margin-right: 20px; flex-shrink: 0; }
     .img-garage-cont img { width: 100%; height: 100%; object-fit: cover; }
     .info-garage-cont { flex-grow: 1; }
@@ -178,132 +213,177 @@
 
     <div id="cv-area-impresion">
         <div class="header">
-    <img src="https://i.ibb.co/99d65hMM/perfil.jpeg" alt="Cristopher Villa" class="foto-perfil">
-    <h1>Cristopher Manuel Villa Beltrán</h1>
-    <p>Estudiante de Tecnología de la Información</p>
+    {% if perfil.foto %}
+    <img src="{{ perfil.foto.url }}" class="foto-perfil">
+{% endif %}
+<h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
+    <p>{{ perfil.descripcionperfil }}</p>
     <!-- CERTIFICADOS SOLO PARA PDF -->
-<div id="certificados-pdf" style="display:none; margin-top:40px;">
-    <div class="card">
-        <h3>Certificados</h3>
 
-        <img src="https://ibb.co/GzzJ3bV" style="width:100%; margin-bottom:20px;">
-        <img src="https://ibb.co/20hTqDL6" style="width:100%; margin-bottom:20px;">
-        <img src="https://ibb.co/5g7tRGTD" style="width:100%;">
-    </div>
-</div>
 
 </div>
 
         <div id="inicio" class="seccion activa">
             <div class="card">
                 <h3>DATOS PERSONALES</h3>
-                <h4>IDENTIDAD</h4>
-                <p><strong>Cédula:</strong> 1351563257</p>
-                <p><strong>Lugar de nacimiento:</strong> Santo Domingo</p>
-                <p><strong>Nacionalidad:</strong> Ecuatoriana</p>
-                <p><strong>Licencia de conducir:</strong> NO</p>
-                <p><strong>Fecha de nacimiento:</strong> 04 Febrero 2006</p>
-                <p><strong>Ciudad:</strong> Manta</p>
-                <p><strong>Género:</strong> Masculino</p>
-                <p><strong>Estado civil:</strong> Casado</p>
-
-                <h4 style="margin-top:20px;">CONTACTO</h4>
-                <p><strong>Teléfono móvil:</strong> 0997577903</p>
-                <p><strong>Dirección:</strong> Avenida 111 entre calle 110 y 109</p>
-                <p><strong>Correo:</strong> <span style="color:#38bdf8;">cristophermvilla123@email.com</span></p>
-                <p><strong>Sitio web:</strong> cristopher.com</p>
+                <p><strong>Cédula:</strong> {{ perfil.numerocedula }}</p>
+                <p><strong>Nacionalidad:</strong> {{ perfil.nacionalidad }}</p>
+                <p><strong>lugar nacimiento:</strong> {{ perfil.lugarnacimiento }}</p>
+                <p><strong>Fecha de nacimiento:</strong> {{ perfil.fechanacimiento }}</p>
+                <p><strong>Dirección:</strong> {{ perfil.direcciondomiciliaria }}</p>
+                <p><strong>Genero:</strong> {{ perfil.sexo }}</p>
+                <p><strong>Estado civil:</strong> {{ perfil.estadocivil }}</p>
+                <p><strong>Licencia de conducir:</strong> {{ perfil.licenciaconducir }}</p>
+                <p><strong>Celular:</strong> {{ perfil.telefonofijo }}</p>
+                <p><strong>Telf. convencional:</strong> {{ perfil.telefonoconvencional }}</p>
+                <p><strong>Dirección de trabajo:</strong> {{ perfil.direcciontrabajo }}</p>
+                <p><strong>Sitio Web:</strong> {{ perfil.sitioweb }}</p>
             </div>
         </div>
 
         <div id="experiencia" class="seccion">
+            
             <div class="card">
                 <div class="exp-header">
-                    <div>
-                        <h3 style="margin:0;">Operador de CCTV</h3>
-                        <p style="color:#64748b; font-size:13px;">Network Orion Seguridad — Via San Mateo, Plaza Beach</p>
-                    </div>
-                    <div class="exp-status">
-                        <span class="fecha-badge">Inicio: 29 Octubre 2024</span>
-                    </div>
+            <h3 style="margin:0;">Experiencia Laboral</h3>
+        </div>
+                <div class="exp-header">
+
+
+                    
+                    {% for exp in experiencias %}
+<div class="card">
+    <p><strong>Cargo:</strong> {{ exp.cargodesempenado }}</p>
+    <p><strong>Nombre de la Empresa:</strong> {{ exp.nombrempresa }}</p>
+    <p><strong>Lugar Empresa:</strong> {{ exp.lugarempresa }}</p>
+    <p><strong>Email de la empresa:</strong> {{ exp.emailempresa }}</p>
+    <p><strong>Sitio Web:</strong> {{ exp.sitiowebempresa }}</p>
+    <p><strong>Nombre de Contacto:</strong> {{ exp.nombrecontactoempresarial }}</p>
+    <p><strong>Teléfono:</strong> {{ exp.telefonocontactoempresarial }}</p>    
+    
+
+    <span class="fecha-badge">
+        Desde: {{ exp.fechainiciogestion }} — Hasta: {{ exp.fechafingestion }}
+    </span>
+
+    <p><strong>Descripción Funciones:</strong> {{ exp.descripcionfunciones }}</p>
+
+    {% if exp.rutacertificado %}
+        <a href="{{ exp.rutacertificado.url }}" target="_blank" class="btn-archivo no-pdf">
+            📄 Ver certificado
+        </a>
+
+        
+    {% endif %}
+</div>
+{% endfor %}
                 </div>
-                <h4>CONTACTO EMPRESARIAL</h4>
-                <p><strong>Nombre:</strong> Network Orion Seguridad</p>
-                <p><strong>Teléfono:</strong> <span style="color:#38bdf8;">099999999</span></p>
-                <p><strong>Email:</strong> <span style="color:#38bdf8;">networkorion@gmail.com</span></p>
-                <h4>FUNCIONES REALIZADAS</h4>
-                <p>Monitoreo de Cámaras y seguridad electrónica.</p>
-                <a href="https://ibb.co/GzzJ3bV" target="_blank" class="btn-archivo">📄 Ver certificado</a>
             </div>
         </div>
 
         <div id="reconocimientos" class="seccion">
             <div class="card">
                 <div class="exp-header">
-                    <div>
-                        <h3 style="margin:0;">Certificación de título de bachiller</h3>
-                        <p style="color:#64748b; font-size:13px;">Colegio Tarqui - Ministerio de Educación</p>
-                    </div>
-                    <div class="exp-status">
-                        <span class="fecha-badge">🎓 Académico</span>
-                        <span class="fecha-badge">📅 20 marzo 2024</span>
-                    </div>
-                </div>
-                <h4>ENTIDAD PATROCINADORA</h4>
-                <p>Ministerio de Educación</p>
-                <h4>CONTACTO</h4>
-                <p>Ministerio de Educación · <span style="color:#38bdf8;">+593 999999999</span></p>
-                <a href="https://ibb.co/20hTqDL6" target="_blank" class="btn-archivo">📄 Ver certificado</a>
+            <h3 style="margin:0;">Logros</h3>
+        </div>
+                <div class="reco-header">
+                    {% for reco in logros %}
+<div class="card">
+
+    <p><strong>Tipo Reconocimiento:</strong> {{ reco.tiporeconocimiento }}</p>
+    <p><strong>Fecha:</strong> {{ reco.fechareconocimiento }}</p>
+    <p><strong>Descripción:</strong> {{ reco.descripcionreconocimiento }}</p>
+    <p><strong>Entidad:</strong> {{ reco.entidadpatrocinadora }}</p>
+    <p><strong>Contacto:</strong> {{ reco.nombrecontactoauspicia }}</p>
+    <p><strong>Teléfono:</strong> {{ reco.telefonocontactoauspicia }}</p>
+
+
+    {% if reco.rutacertificado %}
+        <a href="{{ reco.rutacertificado.url }}" target="_blank" class="btn-archivo no-pdf">
+            📄 Ver certificado
+        </a>
+    {% endif %}
+</div>
+{% endfor %}
             </div>
         </div>
-
-        <div id="cursos" class="seccion">
-            <div class="card">
-                <div class="exp-header">
-                    <h3 style="margin:0;">Formación Complementaria</h3>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div style="flex: 1;">
-                        <h4>CURSOS FINALIZADOS</h4>
-                        <p>Linux unhatcher - CISCO NETWORKING ACADEMY</p>
-                    </div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; margin-left: 15px;">
-                        <span class="fecha-badge">Inicio: 13 May 2025</span>
-                        <span class="fecha-badge">Fin: 05 Jun 2026</span>
-                        <span class="fecha-badge">8 horas</span>
-                    </div>
-                </div>
-                <h4 style="margin-top: 15px;">DESCRIPCIÓN DEL CURSO</h4>
-                <p>Curso introductorio gratuito de 8 horas diseñado para principiantes absolutos.</p>
-                <a href="https://ibb.co/5g7tRGTD" target="_blank" class="btn-archivo">📄 Ver certificado</a>
-
-            </div>
         </div>
+
+    <div id="cursos" class="seccion">
+    <div class="card">
+        <div class="exp-header">
+            <h3 style="margin:0;">Formación Complementaria</h3>
+        </div>
+
+        <div class="curso-header">
+            {% for curso in cursos %}
+                <div class="card">
+                    <p><strong>Curso Realizado:</strong> {{ curso.nombrecurso }}</p>
+                    <p><strong>Fecha Inicio:</strong> {{ curso.fechainicio }}</p>
+                    <p><strong>Fecha Fin:</strong> {{ curso.fechafin }}</p>
+                    <p><strong>Total Horas:</strong> {{ curso.totalhoras }}</p>
+                    <p><strong>Descripción:</strong> {{ curso.descripcioncurso }}</p>
+                    <p><strong>Entidad:</strong> {{ curso.entidadpatrocinadora }}</p>
+                    <p><strong>Nombre:</strong> {{ curso.nombrecontactoauspicia }}</p>
+                    <p><strong>Teléfono:</strong> {{ curso.telefonocontactoauspicia }}</p>
+                    <p><strong>Email:</strong> {{ curso.emailempresapatrocinadora }}</p>
+
+                    {% if curso.rutacertificado %}
+                        <a href="{{ curso.rutacertificado.url }}" target="_blank" class="btn-archivo no-pdf">
+                            📄 Ver certificado
+                        </a>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No hay cursos registrados.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
         <div id="educacion" class="seccion">
             <div class="card">
                 <div class="exp-header">
-                    <div>
-                        <h3 style="margin:0;">Página Web de Información Deportiva</h3>
-                        <p style="color:#64748b; font-size:13px;">Proyecto de Gestión de Contenido</p>
-                    </div>
+            <h3 style="margin:0;">Productos Académicos</h3>
+        </div>
+                <div class="exp-header">
+                    
+                    {% for academicos in prod_academicos %}
+<div class="card">
+
+    <p><strong>Nombre Curso:</strong> {{ academicos.nombrerecurso }}</p>
+    <p><strong>Clasificador:</strong> {{ academicos.clasificador }}</p>
+    <p><strong>Descripción:</strong> {{ academicos.descripcion }}</p>
+    
+</div>
+{% endfor %}
                 </div>
-                <span class="categoria-badge">🏷️ Medio digital / Gestión de contenido</span>
-                <h4>DESCRIPCIÓN</h4>
-                <p>Diseño y administración de una plataforma digital especializada en la difusión de noticias y actualidad del fútbol nacional e internacional.</p>
+                
             </div>
         </div>
 
         <div id="productos" class="seccion">
             <div class="card">
                 <div class="exp-header">
-                    <div>
-                        <h3 style="margin:0;">Sistema de Gestión de Redes Locales</h3>
-                        <p style="color:#64748b; font-size:13px;">Herramienta de monitoreo y diagnóstico</p>
-                    </div>
+            <h3 style="margin:0;">Productos Laborales</h3>
+        </div>
+                <div class="exp-header">
+                    
+
+{% for laborales in prod_laborales %}
+<div class="card">
+
+    <p><strong>Nombre Producto:</strong> {{ laborales.nombreproducto }}</p>
+    <p><strong>Fecha:</strong> {{ laborales.fechaproducto }}</p>
+    <p><strong>Descripción:</strong> {{ laborales.descripcion }}</p>
+    
+</div>
+{% endfor %}
+
+
+
                 </div>
-                <span class="categoria-badge">🛠️ Redes y Soporte</span>
-                <h4>LOGROS CLAVE</h4>
-                <p>Desarrollo de scripts para la detección automática de intrusos y optimización de tráfico de red.</p>
+                
             </div>
         </div>
 
@@ -314,40 +394,74 @@
                         <h3 style="margin:0;">Venta de Garage</h3>
                         <p style="margin:0; color:#64748b; font-size:14px;">Productos publicados</p>
                     </div>
-                    <span class="total-badge">Total: 2</span>
+
+{% for garaje in articulos_garage %}
+<div class="card">
+
+    <p><strong>Nombre Producto:</strong> {{ garaje.nombreproducto }}</p>
+    <p><strong>Estado:</strong> {{ garaje.estadoproducto }}</p>
+    <p><strong>Descripción:</strong> {{ garaje.descripcion }}</p>
+    <p><strong>Precio:</strong> {{ garaje.valordelbien }}</p>
+    <p><strong>Fecha Publicación:</strong> {{ garaje.fechapublicacion }}</p>
+    
+
+    {% if garaje.articulo %}
+    <div class="imagen-garage">
+        <img 
+            src="{{ garaje.articulo.url }}" 
+            alt="Imagen de {{ garaje.nombreproducto }}"
+            class="img-garage"
+        >
+    </div>
+{% else %}
+    <p><em>Sin imagen disponible</em></p>
+{% endif %}
+
+
+
+</div>
+{% endfor %}
+            </div>
+
+
+                   
                 </div>
 
-                <div class="item-lista-garage">
-                    <div class="img-garage-cont">
-                        <img src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?q=80&w=300" alt="PS5">
-                    </div>
-                    <div class="info-garage-cont">
-                        <h4>Consola PlayStation 5</h4>
-                        <span class="pub-date">Publicado: 31 Ene 2026</span>
-                        <span class="label-desc">DESCRIPCIÓN</span>
-                        <p>Versión de disco, un control original y cables. Poco uso.</p>
-                    </div>
-                    <div class="side-price-cont">
-                        <span class="precio-val">$480,00</span>
-                        <span class="status-pill pill-excelente">✅ Excelente</span>
-                    </div>
+                
                 </div>
 
-                <div class="item-lista-garage">
-                    <div class="img-garage-cont">
-                        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=300" alt="Laptop">
-                    </div>
-                    <div class="info-garage-cont">
-                        <h4>Laptop HP Pavilion</h4>
-                        <span class="pub-date">Publicado: 28 Ene 2026</span>
-                        <span class="label-desc">DESCRIPCIÓN</span>
-                        <p>Core i5 10ma Gen, 12GB RAM. Teclado con desgaste leve.</p>
-                    </div>
-                    <div class="side-price-cont">
-                        <span class="precio-val">$320,00</span>
-                        <span class="status-pill pill-regular">⚠️ Regular</span>
-                    </div>
-                </div>
+
+<!-- CERTIFICADOS EXPERIENCIA -->
+<div class="certificados-pdf seccion-cert" data-seccion="experiencia">
+    <h3>Certificados de Experiencia Laboral</h3>
+    {% for exp in experiencias %}
+        {% if exp.rutacertificado %}
+            <img src="{{ exp.rutacertificado.url }}" class="img-certificado">
+        {% endif %}
+    {% endfor %}
+</div>
+
+<!-- CERTIFICADOS CURSOS -->
+<div class="certificados-pdf seccion-cert" data-seccion="cursos">
+    <h3>Certificados de Cursos</h3>
+    {% for curso in cursos %}
+        {% if curso.rutacertificado %}
+            <img src="{{ curso.rutacertificado.url }}" class="img-certificado">
+        {% endif %}
+    {% endfor %}
+</div>
+
+<!-- CERTIFICADOS RECONOCIMIENTOS -->
+<div class="certificados-pdf seccion-cert" data-seccion="reconocimientos">
+    <h3>Certificados de Reconocimientos</h3>
+    {% for reco in logros %}
+        {% if reco.rutacertificado %}
+            <img src="{{ reco.rutacertificado.url }}" class="img-certificado">
+        {% endif %}
+    {% endfor %}
+</div>
+
+               
             </div>
         </div>
 
@@ -365,7 +479,204 @@ function mostrar(id, boton){
 }
 function irAInicio() { mostrar('inicio', document.getElementById('nav-inicio')); }
 function togglePanel() { document.getElementById('panelDescarga').classList.toggle('abierto'); }
+
 function generarPDF() {
+    const area = document.getElementById('cv-area-impresion');
+    const checks = document.querySelectorAll('.pdf-opt');
+    const secciones = area.querySelectorAll('.seccion');
+    const certificados = area.querySelectorAll('.seccion-cert');
+    const botones = area.querySelectorAll('.no-pdf');
+
+    /* 1️⃣ Ocultar botones */
+    botones.forEach(b => b.style.display = 'none');
+
+    /* 2️⃣ FORZAR VISIBILIDAD PDF DE CERTIFICADOS (CLAVE) */
+    certificados.forEach(cert => cert.classList.add('mostrar-pdf'));
+
+    /* 3️⃣ Guardar estado original */
+    const estado = [];
+    [...secciones, ...certificados].forEach(el => {
+        estado.push({ el, display: el.style.display });
+    });
+
+    /* 4️⃣ Mostrar / ocultar secciones */
+    checks.forEach(chk => {
+        const sec = area.querySelector(`#${chk.value}`);
+        if (sec) sec.style.display = chk.checked ? 'block' : 'none';
+    });
+
+    /* 5️⃣ Mostrar certificados SOLO si su sección está activa */
+    certificados.forEach(cert => {
+        const seccion = cert.dataset.seccion;
+        const chk = [...checks].find(c => c.value === seccion);
+        cert.style.display = chk && chk.checked ? 'block' : 'none';
+    });
+
+    /* 6️⃣ Configuración PDF */
+    const config = {
+        margin: 10,
+        filename: 'CV_Cristopher_Villa.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    /* 7️⃣ Generar PDF y restaurar */
+    html2pdf().set(config).from(area).save().then(() => {
+        estado.forEach(e => e.el.style.display = e.display);
+        botones.forEach(b => b.style.display = '');
+        certificados.forEach(cert => cert.classList.remove('mostrar-pdf'));
+    });
+}
+function abrirPDF() {
+    const areaImpresion = document.getElementById('cv-area-impresion');
+    const opciones = document.querySelectorAll('.pdf-opt');
+    const todasLasSecciones = areaImpresion.querySelectorAll('.seccion');
+
+    /* =====================================================
+       1️⃣ OCULTAR BOTONES (NO DEBEN SALIR EN EL PDF)
+    ===================================================== */
+    const botonesPDF = areaImpresion.querySelectorAll('.no-pdf');
+    botonesPDF.forEach(btn => btn.style.display = 'none');
+
+    /* =====================================================
+       2️⃣ MOSTRAR BLOQUES DE CERTIFICADOS (POR SECCIÓN)
+    ===================================================== */
+    const bloquesCertificados = areaImpresion.querySelectorAll('.seccion-cert');
+    bloquesCertificados.forEach(bloque => {
+        bloque.style.display = 'block'; // se ajusta luego según check
+    });
+
+    /* =====================================================
+       3️⃣ GUARDAR ESTADO ORIGINAL
+    ===================================================== */
+    const estadosOriginales = [];
+
+    todasLasSecciones.forEach(sec => {
+        estadosOriginales.push({
+            element: sec,
+            display: sec.style.display,
+            animation: sec.style.animation
+        });
+    });
+
+    bloquesCertificados.forEach(bloque => {
+        estadosOriginales.push({
+            element: bloque,
+            display: bloque.style.display
+        });
+    });
+
+    /* =====================================================
+       4️⃣ MOSTRAR / OCULTAR SECCIONES SEGÚN CHECK
+    ===================================================== */
+    opciones.forEach(opt => {
+        const seccion = areaImpresion.querySelector(`#${opt.value}`);
+        if (seccion) {
+            seccion.style.display = opt.checked ? 'block' : 'none';
+            seccion.style.animation = 'none';
+        }
+    });
+
+    /* =====================================================
+       5️⃣ MOSTRAR / OCULTAR CERTIFICADOS SEGÚN CHECK
+       (ESTA ES LA CLAVE DE TU PROBLEMA)
+    ===================================================== */
+    bloquesCertificados.forEach(bloque => {
+        const seccionAsociada = bloque.dataset.seccion;
+        const checkbox = Array.from(opciones).find(
+            opt => opt.value === seccionAsociada
+        );
+
+        if (checkbox) {
+            bloque.style.display = checkbox.checked ? 'block' : 'none';
+        }
+    });
+
+    /* =====================================================
+       6️⃣ CONFIGURACIÓN PDF
+    ===================================================== */
+    const config = {
+        margin: 10,
+        filename: 'CV_Cristopher_Villa.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 2,
+            useCORS: true
+        },
+        jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
+        }
+    };
+
+    /* =====================================================
+       7️⃣ GENERAR PDF Y RESTAURAR TODO
+    ===================================================== */
+    html2pdf().set(config).from(areaImpresion).save().then(() => {
+
+        estadosOriginales.forEach(e => {
+            e.element.style.display = e.display ?? '';
+            e.element.style.animation = e.animation ?? '';
+        });
+
+        botonesPDF.forEach(btn => btn.style.display = '');
+    });
+}
+function generarPDFAnterior() {
+    const areaImpresion = document.getElementById('cv-area-impresion');
+    const opciones = document.querySelectorAll('.pdf-opt');
+    const todasLasSecciones = areaImpresion.querySelectorAll('.seccion');
+
+    // 🔹 NUEVO 1: ocultar botones en PDF
+    const botonesPDF = areaImpresion.querySelectorAll('.no-pdf');
+    botonesPDF.forEach(btn => btn.style.display = 'none');
+
+    // 🔹 NUEVO 2: mostrar certificados como imágenes
+    const certificadosPDF = document.getElementById('certificados-pdf');
+    if (certificadosPDF) certificadosPDF.classList.add('mostrar-pdf');
+
+    // ===== TU CÓDIGO ORIGINAL (NO SE TOCA) =====
+    const estadosOriginales = [];
+    todasLasSecciones.forEach(s => {
+        estadosOriginales.push({
+            element: s,
+            display: s.style.display
+        });
+    });
+
+    opciones.forEach(opt => {
+        const seccion = areaImpresion.querySelector(`#${opt.value}`);
+        if (seccion) {
+            seccion.style.display = opt.checked ? 'block' : 'none';
+            seccion.style.animation = 'none';
+        }
+    });
+
+    const config = {
+        margin: 10,
+        filename: 'CV_Cristopher_Villa.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(config).from(areaImpresion).save().then(() => {
+
+        // 🔹 RESTAURAR TODO
+        estadosOriginales.forEach(e => {
+            e.element.style.display = e.display;
+            e.element.style.animation = '';
+        });
+
+        botonesPDF.forEach(btn => btn.style.display = '');
+        if (certificadosPDF) certificadosPDF.classList.remove('mostrar-pdf');
+    });
+}
+
+
+function generarPDFOLD() {
     const areaImpresion = document.getElementById('cv-area-impresion');
     const opciones = document.querySelectorAll('.pdf-opt');
     const todasLasSecciones = areaImpresion.querySelectorAll('.seccion');

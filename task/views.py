@@ -1,23 +1,26 @@
 from django.shortcuts import render
 from .models import (
-    DatosPersonales, Experiencia, Logro, Curso, 
-    ProductoAcademico, ProductoLaboral, Garage
+    DatosPersonales,
+    ExperienciaLaboral,
+    Reconocimiento,
+    CursoRealizado,
+    ProductoAcademico,
+    ProductoLaboral,
+    VentaGarage
 )
 
 def home(request):
-    # Obtenemos los datos de cada sección
-    # .first() para datos personales porque solo suele haber uno
-    perfil = DatosPersonales.objects.first() 
-    
-    # .all() para las listas de elementos
-    experiencias = Experiencia.objects.all()
-    logros = Logro.objects.all()
-    cursos = Curso.objects.all()
+    # Datos personales (normalmente solo uno)
+    perfil = DatosPersonales.objects.first()
+
+    # Listas
+    experiencias = ExperienciaLaboral.objects.all()
+    logros = Reconocimiento.objects.all()
+    cursos = CursoRealizado.objects.all()
     prod_academicos = ProductoAcademico.objects.all()
     prod_laborales = ProductoLaboral.objects.all()
-    articulos_garage = Garage.objects.all()
+    articulos_garage = VentaGarage.objects.all()
 
-    # Enviamos todo al HTML dentro de este diccionario
     contexto = {
         'perfil': perfil,
         'experiencias': experiencias,
@@ -27,5 +30,5 @@ def home(request):
         'prod_laborales': prod_laborales,
         'articulos_garage': articulos_garage,
     }
-    
+
     return render(request, 'signup.html', contexto)
